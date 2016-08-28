@@ -6,13 +6,12 @@
     - { role: angstwad.docker_ubuntu }
     - { role: geerlingguy.git }
 
-# - name: Clone app
-#   hosts: all
-#   sudo: no
-#   tasks:
-#     - git: repo=https://github.com/fantasygame/campaigns.git
-#            dest=/home/vagrant/app/current/
-#            version=production
+- name: Clone app
+  hosts: all
+  sudo: no
+  tasks:
+    - git: repo=https://github.com/jkubacki/dockerapp.git
+           dest=/home/vagrant/app/current/
 
 # - name: Copy settings files
 #   hosts: all

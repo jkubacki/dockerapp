@@ -16,12 +16,9 @@ RUN rm -f /etc/service/nginx/down
 # Configure Nginx
 RUN rm /etc/nginx/sites-enabled/default
 ADD nginx.conf /etc/nginx/sites-enabled/my-app.conf
-#USER vagrant
 
 # Install the app
 ADD . /app
 RUN gem install bundler
 RUN bundle install
 RUN RAILS_ENV=production bundle exec rake assets:precompile
-# Clean up APT when done.
-# RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
