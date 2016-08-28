@@ -20,11 +20,11 @@
 #     - copy: src=../application.yml dest=/home/vagrant/app/current/config/application.yml
 #     - copy: src=../database.docker.yml dest=/home/vagrant/app/current/config/database.yml
 
-- name: Copy project
-  hosts: all
-  sudo: no
-  tasks:
-    - copy: src=./ dest=/home/vagrant/app/current/
+# - name: Copy project
+#   hosts: all
+#   sudo: no
+#   tasks:
+#     - copy: src=./ dest=/home/vagrant/app/current/
 
 - name: Setup docker
   hosts: all
@@ -46,7 +46,7 @@
 
   - name: Docker compose
     docker_service:
-      project_name: campaigns
+      project_name: dockerapp
       project_src: "{{ compose_dir }}/"
     register: output
 
