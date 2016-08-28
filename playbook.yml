@@ -1,0 +1,55 @@
+---
+- name: Installing and configuring Docker
+  hosts: all
+  sudo: yes
+  roles:
+    - { role: angstwad.docker_ubuntu }
+    - { role: geerlingguy.git }
+
+# - name: Clone app
+#   hosts: all
+#   sudo: no
+#   tasks:
+#     - git: repo=https://github.com/fantasygame/campaigns.git
+#            dest=/home/vagrant/app/current/
+#            version=production
+
+# - name: Copy settings files
+#   hosts: all
+#   sudo: no
+#   tasks:
+#     - copy: src=../application.yml dest=/home/vagrant/app/current/config/application.yml
+#     - copy: src=../database.docker.yml dest=/home/vagrant/app/current/config/database.yml
+
+- name: Copy project
+  hosts: all
+  sudo: no
+  tasks:
+    - copy: src=./ dest=/home/vagrant/app/current/
+
+- name: Setup docker
+  hosts: all
+  sudo: yes
+  tasks:
+  - set_fact: compose_dir=/home/vagrant/app/current/
+  - file:
+      path: "{{ compose_dir }}"
+      state: directory
+
+  # - name: Upload docker-compose files
+  #   synchronize:
+  #     src: "{{ item }}"
+  #     dest: "{{ compose_dir }}"
+  #   with_items:
+  #     - docker-compose.yml
+  #     - Dockerfile
+  #     - nginx.conf
+
+  - name: Docker compose
+    docker_service:
+      project_name: campaigns
+      project_src: "{{ compose_dir }}/"
+    register: output
+
+  - name: Debug
+    debug: var=output

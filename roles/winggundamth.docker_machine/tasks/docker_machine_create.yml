@@ -1,0 +1,15 @@
+---
+- block: # Create Docker Machine
+  - name: Create Docker Machine if not exists
+    command: |
+      docker-machine create --driver generic
+      --generic-ssh-user {{ ansible_user }}
+      --generic-ip-address {{ ansible_host }}
+      --generic-ssh-port {{ ansible_port }}
+      {{ docker_machine_extra_parameters|default('') }}
+      {{ inventory_hostname }}
+    delegate_to: 127.0.0.1
+    when: docker_machine_host_check.stat.exists == false
+
+  tags:
+    - docker-machine-create

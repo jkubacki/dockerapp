@@ -1,0 +1,22 @@
+---
+- block: # Check and install Docker Machine
+  - name: Check if docker machine version {{ docker_machine_install_version }} is installed
+    shell: |
+      docker-machine --version |
+      grep "version {{ docker_machine_install_version }},"
+    delegate_to: 127.0.0.1
+    ignore_errors: true
+    register: docker_machine_install_check
+
+  - name: Install Docker Machine if not installed
+    get_url:
+      url: "{{ docker_machine_install_url }}"
+      dest: "{{ docker_machine_install_path }}"
+      mode: 0755
+      force: yes
+    delegate_to: 127.0.0.1
+    become: true
+    when: docker_machine_install_check.rc != 0
+
+  tags:
+    - docker-machine-install

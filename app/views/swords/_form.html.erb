@@ -1,0 +1,27 @@
+<%= form_for(sword) do |f| %>
+  <% if sword.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(sword.errors.count, "error") %> prohibited this sword from being saved:</h2>
+
+      <ul>
+      <% sword.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= f.label :damage %>
+    <%= f.number_field :damage %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
