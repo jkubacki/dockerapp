@@ -1,4 +1,11 @@
 ---
+- name: Add deployment user
+  hosts: all
+  sudo: yes
+  tasks:
+  - user: name=deployer
+  - authorized_key: user=deployer key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+
 - name: Installing and configuring Docker
   hosts: all
   sudo: yes
@@ -8,41 +15,20 @@
 
 - name: Clone app
   hosts: all
-  sudo: no
+  become: yes
+  become_user: deployer
   tasks:
     - git: repo=https://github.com/jkubacki/dockerapp.git
-           dest=/home/vagrant/app/current/
-
-# - name: Copy settings files
-#   hosts: all
-#   sudo: no
-#   tasks:
-#     - copy: src=../application.yml dest=/home/vagrant/app/current/config/application.yml
-#     - copy: src=../database.docker.yml dest=/home/vagrant/app/current/config/database.yml
-
-# - name: Copy project
-#   hosts: all
-#   sudo: no
-#   tasks:
-#     - copy: src=./ dest=/home/vagrant/app/current/
+           dest=/home/deployer/app/current/
 
 - name: Setup docker
   hosts: all
   sudo: yes
   tasks:
-  - set_fact: compose_dir=/home/vagrant/app/current/
+  - set_fact: compose_dir=/home/deployer/app/current/
   - file:
       path: "{{ compose_dir }}"
       state: directory
-
-  # - name: Upload docker-compose files
-  #   synchronize:
-  #     src: "{{ item }}"
-  #     dest: "{{ compose_dir }}"
-  #   with_items:
-  #     - docker-compose.yml
-  #     - Dockerfile
-  #     - nginx.conf
 
   - name: Docker compose
     docker_service:
